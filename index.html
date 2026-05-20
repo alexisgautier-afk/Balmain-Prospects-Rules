@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balmain BeStyle — Spécification KPIs Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-deep: #1E2761;
+    --blue-primary: #34477C;
+    --blue-vo2: #4C6EF5;
+    --blue-100: #DBE4FF;
+    --blue-50: #F0F4FF;
+    --text-primary: #1A1D2B;
+    --text-secondary: #5A6178;
+    --text-muted: #8B91A5;
+    --surface: #F7F8FA;
+    --subtle-bg: #EEF0F5;
+    --border: #E2E5ED;
+    --green: #059669;
+    --green-bg: #ECFDF5;
+    --gold: #92700C;
+    --gold-bg: #FFFBEB;
+    --gold-border: #FDE68A;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    background: var(--surface);
+    padding: 40px 24px;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .doc-header {
+    background: linear-gradient(135deg, #0d1529 0%, #1a2340 50%, #263266 100%);
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .doc-header-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 12px;
+  }
+
+  .doc-header h1 {
+    font-family: 'Jost', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  .doc-header p {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .doc-header-meta {
+    margin-top: 20px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .meta-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.6);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .section-label-bar {
+    width: 16px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--blue-vo2);
+    flex-shrink: 0;
+  }
+
+  .section-label span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .section h2 {
+    font-family: 'Jost', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 12px;
+  }
+
+  .card-accent-top {
+    border-top: 3px solid var(--blue-vo2);
+  }
+
+  .card-accent-green {
+    border-top: 3px solid var(--green);
+  }
+
+  .card-accent-gold {
+    border-top: 3px solid #D4A017;
+  }
+
+  .card h3 {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .kpi-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    background: var(--blue-50);
+    color: var(--blue-primary);
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .kpi-name.green {
+    background: var(--green-bg);
+    color: var(--green);
+  }
+
+  /* Règles */
+  .rule-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rule-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .rule-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    background: var(--blue-primary);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Alert */
+  .alert {
+    background: var(--gold-bg);
+    border: 1px solid var(--gold-border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .alert-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .alert p {
+    font-size: 0.8rem;
+    color: var(--gold);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  /* Table example */
+  .example-table-wrap {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .example-table-header {
+    background: var(--blue-deep);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .example-table-header span {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.02em;
+  }
+
+  .example-table-header .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    background: var(--subtle-bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: var(--surface);
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .badge-prospect {
+    background: var(--blue-50);
+    color: var(--blue-primary);
+  }
+
+  .badge-client {
+    background: var(--green-bg);
+    color: var(--green);
+  }
+
+  .badge-converti {
+    background: #F0FFF4;
+    color: #1a7a4a;
+    border: 1px solid #A7F3D0;
+  }
+
+  /* Result summary */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .result-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .result-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .result-card .value {
+    font-family: 'Jost', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--blue-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .result-card .value.green {
+    color: var(--green);
+  }
+
+  .result-card .desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .result-card ul {
+    list-style: none;
+    margin-top: 6px;
+  }
+
+  .result-card ul li {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    padding: 1px 0;
+  }
+
+  .result-card ul li::before {
+    content: "→ ";
+    color: var(--text-muted);
+  }
+
+  /* Definition */
+  .def-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  .highlight {
+    background: var(--blue-50);
+    border-left: 3px solid var(--blue-vo2);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    color: var(--blue-primary);
+    line-height: 1.65;
+    font-weight: 500;
+    margin-top: 12px;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    background: var(--subtle-bg);
+    color: var(--blue-primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- En-tête -->
+  <div class="doc-header">
+    <div class="doc-header-label">Spécification technique — Dashboard vendeur</div>
+    <h1>Balmain BeStyle · Logique KPI Prospects</h1>
+    <p>Définition des règles métier pour les indicateurs Prospects Créés et Prospects Convertis</p>
+    <div class="doc-header-meta">
+      <span class="meta-badge">iOS App</span>
+      <span class="meta-badge">Salesforce Backend</span>
+      <span class="meta-badge">v1.0 — Mai 2026</span>
+    </div>
+  </div>
+
+
+  <!-- Définitions -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-label-bar"></div>
+      <span>01 — Définitions</span>
+    </div>
+    <h2>Statuts des comptes</h2>
+
+    <div class="def-grid">
+      <div class="card card-accent-top">
+        <div class="kpi-name">Prospect</div>
+        <h3>Compte Prospect</h3>
+        <p>Un compte est considéré <strong>prospect</strong> lorsqu'il a été créé dans Salesforce et qu'<strong>aucun achat n'a été enregistré le jour de sa création</strong>.</p>
+      </div>
+      <div class="card card-accent-green">
+        <div class="kpi-name green">Client</div>
+        <h3>Compte Client</h3>
+        <p>Un compte est considéré <strong>client</strong> lorsque sa <strong>première date d'achat est identique à sa date de création</strong>. Il n'est alors jamais passé par le statut prospect.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+
+  <!-- KPI 1 -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-label-bar"></div>
+      <span>02 — KPI #1</span>
+    </div>
+    <h2>Prospects Créés</h2>
+
+    <div class="card card-accent-top">
+      <div class="kpi-name">prospect_created</div>
+      <h3>Définition</h3>
+      <p>Nombre de comptes créés <strong>aujourd'hui</strong> pour lesquels <strong>aucun achat n'a été enregistré le jour de leur création</strong>.</p>
+
+      <div class="highlight" style="margin-top: 14px;">
+        ⚠️ Ce compteur est <strong>figé au moment de la création du compte</strong>. Il ne diminue jamais, même si le prospect effectue un achat ultérieurement.
+      </div>
+    </div>
+
+    <ul class="rule-list" style="margin-top: 14px;">
+      <li>
+        <span class="rule-num">1</span>
+        Un compte est compté dès sa création si aucun achat n'est rattaché à la même date de création.
+      </li>
+      <li>
+        <span class="rule-num">2</span>
+        Le filtre de date porte sur <code>date_creation = TODAY</code> (date du dashboard affiché).
+      </li>
+      <li>
+        <span class="rule-num">3</span>
+        Un prospect qui achète a posteriori <strong>reste comptabilisé</strong> dans ce KPI. Il est également compté dans <code>prospect_converted</code> (voir KPI #2).
+      </li>
+      <li>
+        <span class="rule-num">4</span>
+        Un compte qui achète le jour même de sa création <strong>n'est jamais compté</strong> ici — il est directement client.
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+
+  <!-- KPI 2 -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-label-bar"></div>
+      <span>03 — KPI #2</span>
+    </div>
+    <h2>Prospects Convertis</h2>
+
+    <div class="card card-accent-green">
+      <div class="kpi-name green">prospect_converted</div>
+      <h3>Définition</h3>
+      <p>Nombre de comptes qui ont <strong>d'abord été créés en tant que prospects</strong> (aucun achat le jour de leur création), et qui ont ensuite effectué <strong>leur premier achat à une date ultérieure</strong>.</p>
+    </div>
+
+    <ul class="rule-list" style="margin-top: 14px;">
+      <li>
+        <span class="rule-num">1</span>
+        Le compte doit avoir été créé sans achat le même jour (<code>date_creation ≠ date_premier_achat</code>).
+      </li>
+      <li>
+        <span class="rule-num">2</span>
+        Le compte doit avoir effectué au moins un achat (<code>date_premier_achat IS NOT NULL</code>).
+      </li>
+      <li>
+        <span class="rule-num">3</span>
+        La conversion peut s'être produite n'importe quel jour — ce KPI n'est <strong>pas filtré sur la date du jour</strong> de conversion, mais sur la <strong>date de création du prospect</strong> (= TODAY pour la vue journalière).
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+
+  <!-- Exemple chiffré -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-label-bar"></div>
+      <span>04 — Exemple illustré</span>
+    </div>
+    <h2>Cas concret — Vue du 20 mai 2026</h2>
+
+    <div class="example-table-wrap">
+      <div class="example-table-header">
+        <span>Comptes créés le 20 mai 2026</span>
+        <span class="tag">Données Salesforce</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Compte</th>
+            <th>Date création</th>
+            <th>Date 1er achat</th>
+            <th>Statut initial</th>
+            <th>Statut actuel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Alice M.</strong></td>
+            <td>20 mai</td>
+            <td>20 mai (même jour)</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td><span class="badge badge-client">Client</span></td>
+          </tr>
+          <tr>
+            <td><strong>Bruno K.</strong></td>
+            <td>20 mai</td>
+            <td>—</td>
+            <td><span class="badge badge-prospect">Prospect</span></td>
+            <td><span class="badge badge-prospect">Prospect</span></td>
+          </tr>
+          <tr>
+            <td><strong>Clara S.</strong></td>
+            <td>20 mai</td>
+            <td>22 mai</td>
+            <td><span class="badge badge-prospect">Prospect</span></td>
+            <td><span class="badge badge-converti">Converti</span></td>
+          </tr>
+          <tr>
+            <td><strong>David P.</strong></td>
+            <td>20 mai</td>
+            <td>—</td>
+            <td><span class="badge badge-prospect">Prospect</span></td>
+            <td><span class="badge badge-prospect">Prospect</span></td>
+          </tr>
+          <tr>
+            <td><strong>Elise T.</strong></td>
+            <td>20 mai</td>
+            <td>20 mai (même jour)</td>
+            <td><span class="badge badge-client">Client</span></td>
+            <td><span class="badge badge-client">Client</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="label">Prospects Créés</div>
+        <div class="value">3</div>
+        <div class="desc">Comptes créés le 20 mai sans achat ce jour-là</div>
+        <ul>
+          <li>Bruno K.</li>
+          <li>Clara S.</li>
+          <li>David P.</li>
+        </ul>
+      </div>
+      <div class="result-card">
+        <div class="label">Prospects Convertis</div>
+        <div class="value green">1</div>
+        <div class="desc">Prospects créés le 20 mai ayant acheté depuis</div>
+        <ul>
+          <li>Clara S. (achat le 22 mai)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="alert" style="margin-top: 14px;">
+      <span class="alert-icon">💡</span>
+      <p>Clara S. est comptée à la fois dans <strong>Prospects Créés (= 3)</strong> et dans <strong>Prospects Convertis (= 1)</strong>. Son achat ultérieur ne la retire pas du premier compteur.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+
+  <!-- Règle de non-décrémentation -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-label-bar"></div>
+      <span>05 — Règle clé</span>
+    </div>
+    <h2>Principe d'immuabilité du compteur</h2>
+
+    <div class="card">
+      <p>Le KPI <strong>Prospects Créés</strong> est calculé sur la base du <strong>statut du compte au moment de sa création</strong>, et non sur son statut actuel. Un prospect converti n'est pas retiré de ce compteur : sa conversion est une information additionnelle, reflétée exclusivement dans le KPI <strong>Prospects Convertis</strong>.</p>
+      <div class="highlight">
+        <strong>Règle :</strong> <code>prospects_créés ≥ prospects_convertis</code> est toujours vrai. Les deux compteurs ne sont pas exclusifs — ils se lisent en complément l'un de l'autre.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+
+  <!-- Logique Salesforce -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-label-bar"></div>
+      <span>06 — Implémentation Salesforce</span>
+    </div>
+    <h2>Logique de requête suggérée</h2>
+
+    <div class="card">
+      <div class="kpi-name">prospect_created</div>
+      <h3>Prospects Créés (pour la date J)</h3>
+      <p>Comptes dont <code>DATE(CreatedDate) = J</code> <strong>ET</strong> dont la date du premier achat est absente ou postérieure à J.</p>
+      <p style="margin-top: 8px; color: var(--text-muted);">En d'autres termes : créés le jour J, avec aucun achat rattaché à ce même jour J.</p>
+    </div>
+
+    <div class="card card-accent-green" style="margin-top: 12px;">
+      <div class="kpi-name green">prospect_converted</div>
+      <h3>Prospects Convertis (pour la date J)</h3>
+      <p>Parmi les comptes <code>prospect_created</code> du jour J, ceux dont <code>date_premier_achat IS NOT NULL</code> et <code>date_premier_achat > J</code>.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
